@@ -1,0 +1,183 @@
+<head>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.2/css/bootstrap.min.css'>
+<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.3.1/css/all.css'>
+<script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js'></script>
+<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'></script>
+<style>
+.container{padding:2rem 0}@media (min-width:576px){.modal-dialog{max-width:400px}.modal-dialog 
+.modal-content{padding:1rem}}.modal-header 
+.close{margin-top:-1.5rem}.form-title{margin:-2rem 0 2rem}.btn-round{border-radius:3rem}.delimiter{padding:1rem}.social-buttons 
+.btn{margin:0 .5rem 1rem}.signup-section{padding:.3rem 0}
+</style>
+<script>
+  $(document).ready(function() {
+    var access_token=sessionStorage.getItem("access_token")||'';
+    if (access_token){
+        if(access_token==''){
+            $('#loginModal').modal('show');
+        }else{
+            $('#main_container').show();
+        }
+    }else{
+        $('#loginModal').modal('show');
+    }         
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+});
+
+function switchLoginMode(strg_mode){
+$(document).ready(function() {
+  switch(strg_mode){
+    case "signup":
+      $('#login_title').html('Sign Up');
+      $('#login_button').html('Sign Up');
+      $('.signup_mode').show();
+      $('.login_mode').hide();
+      break;
+    case "login":
+      $('#login_title').html('Login');
+      $('#login_button').html('Login');
+      $('.login_mode').show();
+      $('.signup_mode').hide();      
+      break;
+  
+  }
+});
+}
+function doLoginSignUp(strg_mode){
+    sessionStorage.removeItem("access_token");
+    switch($('#login_button').text()){
+        case "Login":
+var settings = {
+  "url": "https://o2cih.ciroue.com/api/login",
+  "method": "POST",
+  "timeout": 0,
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  },
+  "data": JSON.stringify({
+    "email": $('#input_email').val(),
+    "password": $('#input_password').val()
+  }),
+};
+
+$.ajax(settings).done(function (response) {
+  console.log(response);
+  var access_token=response["access_token"]||"";
+  if(access_token!=""){
+      sessionStorage.setItem("access_token",access_token);
+       location.reload();
+  }else{
+      sessionStorage.removeItem("access_token");
+  }
+});
+
+
+
+            break;
+        case "Sign Up":
+console.log($('#input_password').val());
+console.log($('#input_confirm_password').val());
+if ($('#input_password').val()==$('#input_confirm_password').val()){
+alert(1)
+var settings = {
+  "url": "https://o2cih.ciroue.com/api/register",
+  "method": "POST",
+  "timeout": 0,
+  "headers": {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+  },
+  "data": JSON.stringify({
+    "name": $('#input_name').val(),
+    "email": $('#input_email').val(),
+    "password": $('#input_password').val()
+  }),
+};
+
+$.ajax(settings).done(function (response) {
+  console.log(response);
+});
+
+$.ajax(settings).fail(function() {
+    alert( "error" );
+  })
+
+}
+
+
+            break;
+    }
+ 
+}
+
+function doLogout(){
+    sessionStorage.removeItem('access_token');
+    location.reload();
+}
+
+
+</script>
+</head>
+<body>
+<div id="main_container" class="container"  style="display:none">
+<h1>Asset Manager</h1>
+  <button type="button" class="btn btn-info btn-round" onclick="doLogout()">
+    Logout
+  </button>  
+</div>
+
+<div class="modal fade bg-dark" id="loginModal"  data-backdrop="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-bottom-0">
+      <!-- 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">x</span> 
+        </button>
+      -->  
+      </div>
+      <div class="modal-body">
+        <div class="form-title text-center">
+          <h4 id="login_title" >Login</h4>
+        </div>
+        <div class="d-flex flex-column text-center">
+          <form>
+            <div class="form-group signup_mode"   style="display:none;">
+              <input type="email" class="form-control" id="input_name"placeholder="Name...">
+            </div>
+            <div class="form-group">
+              <input type="email" class="form-control" id="input_email"placeholder="Email address...">
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" id="input_password" placeholder="Password...">
+            </div>
+            <div class="form-group signup_mode"   style="display:none;">
+              <input type="password" class="form-control" id="input_confirm_password" placeholder="Confirm Password...">
+            </div>            
+            <button id="login_button" type="button" class="btn btn-info btn-block btn-round" onclick="doLoginSignUp()">Login</button>
+          </form>
+          
+
+
+      </div>
+    </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <div class="login_mode" style="display:block;">Not a member yet? <a href='javascript: switchLoginMode("signup");'> Sign Up</a>.</div>
+        <div class="signup_mode" style="display:none;">Already have account? <a href='javascript: switchLoginMode("login");'> Login</a>.</div>        
+      </div>
+  </div>
+</div>
+
+
+
+
+<script>
+
+
+</script>
+</body>
+</html>
